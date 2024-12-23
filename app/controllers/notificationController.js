@@ -1,5 +1,5 @@
 const Notification = require('../models/Notification');
-const Appointment = require('../models/Appointment'); // Assuming Appointment model is available
+const Appointment = require('../models/Appointment');
 
 // Schedule a notification
 const scheduleNotification = async (req, res) => {
