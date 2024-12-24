@@ -1,4 +1,5 @@
 const Notification = require('../models/Notification');
+const Appointment = require('../models/Appointment');
 
 // Schedule a notification
 const scheduleNotification = async (req, res) => {
@@ -31,8 +32,32 @@ const markAsSent = async (req, res) => {
     }
 };
 
+// Automated reminder for upcoming appointments
+const sendUpcomingReminders = async () => {
+    try {
+        const now = new Date();
+        const upcomingAppointments = await Appointment.find({
+            date: { $gte: now, $lte: new Date(now.getTime() + 24 * 60 * 60 * 1000) }, // Next 24 hours
+        }).populate('patientId');
+
+        upcomingAppointments.forEach(async (appointment) => {
+            const message = `Reminder: You have an appointment scheduled on ${appointment.date.toLocaleString()}`;
+            await Notification.create({
+                patientId: appointment.patientId._id,
+                message,
+                sendAt: appointment.date,
+            });
+            console.log(`Notification scheduled for patient ${appointment.patientId.name}`);
+        });
+    } catch (error) {
+        console.error('Error sending reminders:', error.message);
+    }
+};
+
+
 module.exports = {
     scheduleNotification,
     getAllNotifications,
     markAsSent,
+    sendUpcomingReminders,
 };
