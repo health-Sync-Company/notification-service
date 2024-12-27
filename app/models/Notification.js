@@ -2,9 +2,12 @@ const mongoose = require('mongoose');
 
 const NotificationSchema = new mongoose.Schema({
     patientId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Patient',
+        type: String,
         required: [true, "Patient ID is required"],
+    },
+    patientName: {
+        type: String,
+        required: [true, "Patient name is required"],
     },
     message: {
         type: String,
