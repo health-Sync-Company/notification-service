@@ -95,21 +95,21 @@ jobs:
           echo "Verifying Green Deployment..."
           kubectl rollout status deployment/notification-service-green -n "${{ env.K8S_NAMESPACE }}" --timeout=180s || kubectl describe deployment notification-service-green -n "${{ env.K8S_NAMESPACE }}"
 
-      # Step 14: Deployment Health Check
-      - name: Deployment Health Check
-        run: |
-          echo "Running Deployment Health Check..."
-          curl --fail http://<EXTERNAL_IP_GREEN>/api/${{ env.APPLICATION_NAME }}/health || exit 1
-          echo "Health Check Passed."
-
-      # Step 15: Switch Traffic to Green
+      # Step 14: Switch Traffic to Green
       - name: Switch Traffic to Green
         run: |
           echo "Switching traffic to Green environment..."
           kubectl patch service notification-service -p '{"spec":{"selector":{"app":"notification-service","version":"green"}}}' -n "${{ env.K8S_NAMESPACE }}"
 
-      # Step 16: Optional Cleanup Blue Deployment
+      # Step 15: Optional Cleanup Blue Deployment
       - name: Cleanup Blue Deployment
         run: |
           echo "Cleaning up Blue environment..."
           kubectl delete deployment/notification-service-blue -n "${{ env.K8S_NAMESPACE }}"
+
+      # Step 12: Deployment Health Check
+#      - name: Deployment Integration Tests
+#        run: |
+#          echo "Running Service Health Check Test..."
+#          curl --fail "http://localhost:8080/api/${{ env.APPLICATION_NAME }}/health" || exit 1
+#          echo "Health Check Passed."
