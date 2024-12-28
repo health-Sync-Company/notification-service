@@ -107,7 +107,7 @@ jobs:
           echo "Cleaning up Blue environment..."
           kubectl delete deployment/notification-service-blue -n "${{ env.K8S_NAMESPACE }}"
 
-      # Step 12: Deployment Health Check
+      # Step 16: Deployment Health Check
 #      - name: Deployment Integration Tests
 #        run: |
 #          echo "Running Service Health Check Test..."
