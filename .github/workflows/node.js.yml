@@ -71,39 +71,44 @@ jobs:
       - name: Get Cluster Credentials
         run: gcloud container clusters get-credentials "${{ env.K8S_CLUSTER_NAME }}" --zone "${{ env.K8S_CLUSTER_ZONE }}" --project "${{ secrets.GCP_PROJECT_ID_VALUE }}"
 
-      # Step 10: Apply Kubernetes Deployment and Service
+      # Step 10: Setup to Gcloud Component
+      - name: Install Gcloud Component
+        run: |-
+          gcloud components install gke-gcloud-auth-plugin
+
+      # Step 11: Apply Kubernetes Deployment and Service
       - name: Apply Kubernetes Manifests
         run: |
           echo "Applying Kubernetes manifests..."
           kubectl apply -f ${{ env.DEPLOYMENT_FILE }} -n "${{ env.K8S_NAMESPACE }}"
           kubectl apply -f ${{ env.SERVICE_FILE }} -n "${{ env.K8S_NAMESPACE }}"
 
-      # Step 11: Verify Blue Deployment
+      # Step 12: Verify Blue Deployment
       - name: Verify Blue Deployment
         run: |
           echo "Verifying Blue Deployment..."
           kubectl rollout status deployment/notification-service-blue -n "${{ env.K8S_NAMESPACE }}"
 
-      # Step 12: Verify Green Deployment
+      # Step 13: Verify Green Deployment
       - name: Verify Green Deployment
         run: |
           echo "Verifying Green Deployment..."
           kubectl rollout status deployment/notification-service-green -n "${{ env.K8S_NAMESPACE }}"
 
-      # Step 13: Deployment Health Check
+      # Step 14: Deployment Health Check
       - name: Deployment Health Check
         run: |
           echo "Running Deployment Health Check..."
           curl --fail http://<EXTERNAL_IP_GREEN>/api/${{ env.APPLICATION_NAME }}/health || exit 1
           echo "Health Check Passed."
 
-      # Step 14: Switch Traffic to Green
+      # Step 15: Switch Traffic to Green
       - name: Switch Traffic to Green
         run: |
           echo "Switching traffic to Green environment..."
           kubectl patch service notification-service -p '{"spec":{"selector":{"app":"notification-service","version":"green"}}}' -n "${{ env.K8S_NAMESPACE }}"
 
-      # Step 15: Optional Cleanup Blue Deployment
+      # Step 16: Optional Cleanup Blue Deployment
       - name: Cleanup Blue Deployment
         run: |
           echo "Cleaning up Blue environment..."
