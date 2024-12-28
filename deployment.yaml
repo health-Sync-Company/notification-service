@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: notification-service
-          image: gcr.io/infra-odyssey-445416-h1/notification-service:blue
+          image: gcr.io/infra-odyssey-445416-h1/notification-service:prod
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -57,7 +57,7 @@ spec:
     spec:
       containers:
         - name: notification-service
-          image: gcr.io/infra-odyssey-445416-h1/notification-service:green
+          image: gcr.io/infra-odyssey-445416-h1/notification-service:prod
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
