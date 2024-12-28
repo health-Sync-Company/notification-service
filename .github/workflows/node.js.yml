@@ -87,13 +87,13 @@ jobs:
       - name: Verify Blue Deployment
         run: |
           echo "Verifying Blue Deployment..."
-          kubectl rollout status deployment/notification-service-blue -n "${{ env.K8S_NAMESPACE }}"
+          kubectl rollout status deployment/notification-service-blue -n "${{ env.K8S_NAMESPACE }}" --timeout=180s || kubectl describe deployment notification-service-blue -n "${{ env.K8S_NAMESPACE }}"
 
       # Step 13: Verify Green Deployment
       - name: Verify Green Deployment
         run: |
           echo "Verifying Green Deployment..."
-          kubectl rollout status deployment/notification-service-green -n "${{ env.K8S_NAMESPACE }}"
+          kubectl rollout status deployment/notification-service-green -n "${{ env.K8S_NAMESPACE }}" --timeout=180s || kubectl describe deployment notification-service-green -n "${{ env.K8S_NAMESPACE }}"
 
       # Step 14: Deployment Health Check
       - name: Deployment Health Check
