@@ -1,34 +1,75 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: notification-service
+  name: notification-service-blue
   labels:
     app: notification-service
+    version: blue
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: notification-service
+      version: blue
   template:
     metadata:
       labels:
         app: notification-service
+        version: blue
     spec:
       containers:
         - name: notification-service
-          image: gcr.io/infra-odyssey-445416-h1/notification-service:prod
+          image: gcr.io/YOUR_PROJECT_ID/notification-service:blue
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
           readinessProbe:
             httpGet:
-              port: 8080
               path: /api/notification-service/health
-            initialDelaySeconds: 40
-            periodSeconds: 10
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
           livenessProbe:
             httpGet:
-              port: 8080
               path: /api/notification-service/health
-            initialDelaySeconds: 40
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service-green
+  labels:
+    app: notification-service
+    version: green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notification-service
+      version: green
+  template:
+    metadata:
+      labels:
+        app: notification-service
+        version: green
+    spec:
+      containers:
+        - name: notification-service
+          image: gcr.io/YOUR_PROJECT_ID/notification-service:green
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /api/notification-service/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/notification-service/health
+              port: 8080
+            initialDelaySeconds: 30
             periodSeconds: 10
